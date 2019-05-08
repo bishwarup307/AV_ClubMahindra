@@ -48,10 +48,25 @@ My approach is pretty straightforward which mainly revolves around feature engin
 3. **`resort_id` features**
    - The last main feature set was about aggregating different attributes on `resort` level e.g. total booking in the resort in different room category and in different holiday sessions etc. This was not as important as the above two and I also didn't do a good ablation study on it but it helped diversifying the feature set nonetheless.
 
-4 **Ratio features**
+4. **Ratio features**
   - I created a number of ratios between:
     - duration of a stay by number of days the booking was done in advance
     - number of children to number of adults travelling
     - number of adults to number of roomnights
     - etc.
+
+#### Modeling
+I had 3 models in total:
+1. LightGBM with all features bagged 10 times
+2. LightGBM with all features but `resort_id` features bagged 10 times
+3. XgBoost with all features but `resort_id` features bagged 6 times
+
+The first model itself was good for the 2nd place in public leaderborad but bagging helped to make the predictions a bit more robust. My final submission is a weighted average of the above 3 models.
+
+## How to run the soultion
+1. Download the code or clone the repo using `git clone`
+2. Download the dataset from the competition website and put it inside a folder called `input` in the main directory. (In case you put the dataset somewhere else you can modify the path in the `config.py` file.)
+3. Create a directory called `submissions` in the main directory.
+4. In a terminal window `cd` to the git directory and the `cd` to `src`
+5. run `python train.py`
 
