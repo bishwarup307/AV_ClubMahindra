@@ -64,6 +64,8 @@ I had 3 models in total:
 The first model itself was good for the 2nd place in public leaderborad but bagging helped to make the predictions a bit more robust. My final submission is a weighted average of the above 3 models.
 
 ## How to run the soultion
+The above code is tested on python >= 3.6
+
 1. Download the code or clone the repo using `git clone`
 2. Download the dataset from the competition website and put it inside a folder called `input` in the main directory. (In case you put the dataset somewhere else you can modify the path in the `config.py` file.)
 3. Create a directory called `submissions` in the main directory.
