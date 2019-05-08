@@ -6,11 +6,13 @@ Public Leaderboard | Private Leaderboard
 ------------------ | -------------------
 94.9250599824 | 95.8431049355
 
-### Problem Statement
+## Problem Statement
 Given around ~300,000 reservations across 32 different hotels/holiday homes of Club Mahindra the objective is to predict the average spend of customers per room per night stay at the hotel against the booking. A wide variety of attributes on the reservation were provided which includes
 `booking_date`, `checkin_date`, `checkout_date` etc. Please visit the [competition homepage](https://datahack.analyticsvidhya.com/contest/club-mahindra-dataolympics/) for more information on the problem statement and the dataset.
 
-### Approach
+## Approach
+
+#### Feature Engineering
 My approach is pretty straightforward which mainly revolves around feature engineering and feature selection. I tried many different combination of features and found the below three feature sets to be most useful for this contest.
 
 1. **Features on `memberid`**
@@ -30,6 +32,26 @@ My approach is pretty straightforward which mainly revolves around feature engin
 	 - average of booking days in advance to checkin for each booking the member had in the past
 	 - etc.
 
-   - There were a significant number of reservations that had exact `booking_date`, `checkin_date` and `checkout_date` for a particular `memberid`. I thought of discarding those as duplicate rows but surpirisngly enough they had different target value `amount_spent_per_room_night_scaled` against them. I wasn't able to assess the quality of data discrepancy there but there seemed to be a good correlation of the target value inside those buckets. Adding a feature representing those buckets helped the score a bit.
+   - There were a significant number of reservations that had exact `booking_date`, `checkin_date` and `checkout_date` for a particular `memberid`. I thought of discarding those as duplicate rows but surpirisngly enough they had different target values `amount_spent_per_room_night_scaled` against them. I wasn't able to assess the quality of data discrepancy there but there seemed to be a good correlation of the target value inside those buckets. Adding a feature representing those buckets helped the score a bit.
 
-   
+2. **Temoral Features**
+   - These are the second most imporant feature in my pool of features. Temporal features almost always helps boosted trees as most of the time these models can leverage the cross-sectional correlation of the data (e.g. interaction between different features at a given observation level) but there is no way for the model to tackle the time dimension (e.g. latent interaction between two or more observations recorded at different time points). by infusing these featues explicitly - the model can also learn the cross-time correlation e.g. how booking of member in the past affects the nature of booking of a member at present. This is very important.
+
+   - The temporal features that I considered are:
+     - The sequential booking number of a member
+     - Days since last checkin
+     - The sequential booking number of a member in a particular resort
+     - Days since last checkin in a particular resort
+     - Did you see a lot of booking happens on the same day by a member? It's normal in that when we plan a trip we tend to book the whole trip and a bunch of different hotels at the same time. A feature around that helped the model to learn if it's a continued trip and perhaps the spend in different hotels will be correlated in that trip.
+     - That said, there were instances where the booking were done in place something like an extended stay. A feature around that also helped to dertermine the nature of spend.
+
+3. **`resort_id` features**
+   - The last main feature set was about aggregating different attributes on `resort` level e.g. total booking in the resort in different room category and in different holiday sessions etc. This was not as important as the above two and I also didn't do a good ablation study on it but it helped diversifying the feature set nonetheless.
+
+4 **Ratio features**
+  - I created a number of ratios between:
+    - duration of a stay by number of days the booking was done in advance
+    - number of children to number of adults travelling
+    - number of adults to number of roomnights
+    - etc.
+
